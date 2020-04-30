@@ -9,7 +9,11 @@ grey = 240, 240, 240
 black = 0, 0, 0
 yellow = 255, 255, 0
 red = 255, 0, 0
+white = 255, 255, 255
 screen = pygame.display.set_mode(size)
+loading_screen = pygame.display.set_mode(size)
+loading = True
+
 Board = [
     [5, 3, 0, 0, 7, 0, 0, 0, 0],
     [6, 0, 0, 1, 9, 5, 0, 0, 0],
@@ -22,6 +26,7 @@ Board = [
     [0, 0, 0, 0, 8, 0, 0, 7, 9]
 ]
 grid = []
+loading_font = pygame.font.SysFont("Georgia", 80)
 font = pygame.font.SysFont("Times New Roman", 80)
 part_font = pygame.font.SysFont("Times New Roman", 30)
 solver = sudoku_class.SudokuSolver(Board)
@@ -29,7 +34,6 @@ current_rect = None
 
 
 def initialize():
-    pygame.display.init()
     screen.fill(grey)
     # initialize grid
     for i in range(1, 4):
@@ -45,6 +49,14 @@ def initialize():
     for i in range(len(grid[0])):
         for j in range(len(grid[1])):
             pygame.draw.rect(screen, black, grid[i][j], 2)
+
+
+def initialize_loading():
+    loading_screen.fill(white)
+    pygame.display.flip()
+    welcome = loading_font.render("Welcome!", 1, black)
+    loading_screen.blit(welcome, (200, 300))
+    pygame.display.flip()
 
 
 def initialize_board(board):
@@ -89,7 +101,7 @@ def print_number(cell, text):
     number = font.render(text, 1, black)
     screen.fill(grey, cell.inflate(-5, -10))
     screen.blit(number, number.get_rect(center=cell.center))
-    pygame.display.update(cell)
+    pygame.display.flip()
 
 
 def print_number_part(cell, text):
@@ -190,6 +202,16 @@ def confront_cells(board_solved, pos):
     return False
 
 
+initialize_loading()
+while loading:
+    for event in pygame.event.get():
+        # quit game
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+            loading = False
+
 initialize()
 initialize_board(Board)
 cell_list = available_cells(Board, grid)
@@ -221,5 +243,6 @@ while 1:
                 display_popup(1)
         # quit game
         if event.type == pygame.QUIT:
+            pygame.quit()
             sys.exit()
     pygame.display.flip()
