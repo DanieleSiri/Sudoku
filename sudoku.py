@@ -26,7 +26,8 @@ Board = [
     [0, 0, 0, 0, 8, 0, 0, 7, 9]
 ]
 grid = []
-loading_font = pygame.font.SysFont("Georgia", 80)
+loading_font = pygame.font.SysFont("Georgia", 25)
+title_font = pygame.font.SysFont("Georgia", 80)
 font = pygame.font.SysFont("Times New Roman", 80)
 part_font = pygame.font.SysFont("Times New Roman", 30)
 solver = sudoku_class.SudokuSolver(Board)
@@ -38,7 +39,7 @@ def initialize():
     # initialize grid
     for i in range(1, 4):
         for j in range(1, 4):
-            pygame.draw.rect(screen, (0, 0, 0, 0), (0, 0, width // 3 * i, height // 3 * j), 5)
+            pygame.draw.rect(screen, black, (0, 0, width // 3 * i, height // 3 * j), 5)
     # rectangle matrix
     for i in range(len(Board[0])):
         grid_y = []
@@ -52,10 +53,29 @@ def initialize():
 
 
 def initialize_loading():
+    """
+    Initializes the loading screen
+    :return: None
+    """
     loading_screen.fill(white)
-    pygame.display.flip()
-    welcome = loading_font.render("Welcome!", 1, black)
-    loading_screen.blit(welcome, (200, 300))
+    welcome = title_font.render("Welcome!", 1, black)
+    press_enter = title_font.render("Press ENTER to play the game", 1, red)
+    loading_screen.blit(welcome, (200, 150))
+    loading_screen.blit(press_enter, (0, 300))
+    bottom_rect = pygame.Rect(0, 500, width, height)
+    pygame.draw.line(loading_screen, black, (0, 500), (width, 500), 3)
+    pygame.draw.rect(loading_screen, yellow, bottom_rect)
+    legend_text = {0: "- Left click: select cell",
+                   1: "- 1-9: input a number",
+                   2: "- ENTER: check if the input number is correct",
+                   3: "- SPACE: end the game printing the solution"}
+    legend_title = loading_font.render("Commands:", 1, black)
+    legend = []
+    for i in range(len(legend_text)):
+        legend.append(loading_font.render(legend_text[i], 1, black))
+    loading_screen.blit(legend_title, bottom_rect.topleft)
+    for i in range(len(legend)):
+        loading_screen.blit(legend[i], (0, 550 + (50 * i)))
     pygame.display.flip()
 
 
@@ -166,8 +186,8 @@ def check_available_cell(grid_list, cell):
 def display_popup(status):
     """
     Displays a popup when the cell selected is already solved or when the game is over
-    :param status: 0 : invalid, 1 : game over
-    :return:
+    :param status: 0 : invalid cell, 1 : game over, 2: invalid number
+    :return: None
     """
     pygame.image.save(screen, "Screenshot.png")
     popup_font = pygame.font.SysFont("Times New Roman", 40)
@@ -202,6 +222,20 @@ def confront_cells(board_solved, pos):
     return False
 
 
+def check_game_over(board, complete_board):
+    """
+    Checks if the board is complete
+    :param board: 2d of int
+    :param complete_board: 2d of int
+    :return: bool
+    """
+    for i in range(len(board[0])):
+        for j in range(len(board[1])):
+            if board[i][j] == 0 or board[i][j] != complete_board[i][j]:
+                return False
+    return True
+
+
 initialize_loading()
 while loading:
     for event in pygame.event.get():
@@ -221,6 +255,8 @@ solver2 = sudoku_class.SudokuSolver(Board)
 while 1:
     for event in pygame.event.get():
         if not screen.get_locked():
+            if check_game_over(solver2.board, solved_board):
+                display_popup(1)
             current_mouse_pos = pygame.mouse.get_pos()
             check = pygame.mouse.get_pressed()[0]  # left click
             if check:
