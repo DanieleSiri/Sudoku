@@ -180,7 +180,7 @@ class SudokuGUI:
             popup_text = popup_font.render("Selected invalid cell!", 1, color_dict['black'], color_dict['yellow'])
         elif status == 1:
             popup_text = popup_font.render("Game over!", 1, color_dict['black'], color_dict['red'])
-        elif status == 2:
+        else:  # status == 2
             popup_text = popup_font.render("Number is invalid", 1, color_dict['black'], color_dict['yellow'])
         popup_rect = pygame.Rect(0, 0, self.width // 3, self.height // 3)
         popup_rect.center = (self.width // 2, self.height // 2)
