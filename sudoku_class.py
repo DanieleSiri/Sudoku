@@ -5,6 +5,9 @@ class SudokuSolver:
     def __init__(self, board):
         self.board = copy.deepcopy(board)
 
+    def __getitem__(self, item):
+        return self.board[item]
+
     def solve(self):
         # solve the board
         position = self.find_empty()
@@ -30,7 +33,7 @@ class SudokuSolver:
         checks if the number is valid
         :param pos: position in the board (row, col)
         :param num: number to check (int)
-        :return: boolean
+        :return: bool
         """
         # check row
         for i in range(len(self.board[1])):
@@ -55,7 +58,7 @@ class SudokuSolver:
         # find empty slot on the board and returns its position
         for i in range(len(self.board[0])):
             for j in range(len(self.board[1])):
-                if self.board[i][j] == 0:
+                if self.get_value((i, j)) == 0:
                     return i, j
         return None
 
