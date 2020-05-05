@@ -1,6 +1,7 @@
 import pygame
 import sudoku_class
 import time
+import sys
 
 pygame.init()
 color_dict = {'grey': (240, 240, 240),
@@ -25,6 +26,9 @@ class SudokuGUI:
         self.board = sudoku_class.SudokuSolver(board)
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.loading_screen = pygame.display.set_mode((self.width, self.height))
+        self.game_over_screen = pygame.display.set_mode((self.width, self.height))
+        self.quit_game_cell = pygame.Rect((self.width//2) + 10, self.height//3, self.width, self.height//4)
+        self.play_again_cell = pygame.Rect(0, self.height//3, (self.width//2) - 10, self.height//4)
 
     def initialize(self):
         self.solved_board.solve()
@@ -49,6 +53,7 @@ class SudokuGUI:
         Initializes the loading screen
         :return: None
         """
+        self.loading_screen.unlock()
         self.loading_screen.fill(color_dict['white'])
         welcome = self.title_font.render("Welcome!", 1, color_dict['black'])
         press_enter = self.loading_font.render("Press ENTER to play the game", 1, color_dict['red'])
@@ -214,3 +219,34 @@ class SudokuGUI:
                 if self.board.board[i][j] == 0 or self.board.board[i][j] != self.solved_board.board[i][j]:
                     return False
         return True
+
+    def game_over(self):
+        """
+        Loads game over screen
+        :return: None
+        """
+        self.game_over_screen.unlock()
+        self.game_over_screen.fill(color_dict['white'])
+        game_over_text = self.font.render("Thanks for playing!", 1, color_dict['black'])
+        self.game_over_screen.blit(game_over_text, (0, self.height//5))
+        play_again_text = self.part_font.render("Play again", 1, color_dict['red'])
+        quit_game_text = self.part_font.render("Quit game", 1, color_dict['red'])
+        pygame.draw.rect(self.game_over_screen, color_dict['black'], self.play_again_cell, 5)
+        pygame.draw.rect(self.game_over_screen, color_dict['black'], self.quit_game_cell, 5)
+        pygame.draw.rect(self.game_over_screen, color_dict['yellow'], self.play_again_cell)
+        pygame.draw.rect(self.game_over_screen, color_dict['yellow'], self.quit_game_cell)
+        self.game_over_screen.blit(play_again_text, self.play_again_cell.midleft)
+        self.game_over_screen.blit(quit_game_text, self.quit_game_cell.midleft)
+        self.game_over_screen.lock()
+
+    def play_again(self, pos):
+        """
+        Checks if the player selected to play again or to quit game
+        :param pos: (x, y)
+        :return: bool
+        """
+        if self.play_again_cell.collidepoint(pos[0], pos[1]):
+            return True
+        elif self.quit_game_cell.collidepoint(pos[0], pos[1]):
+            sys.exit()
+
