@@ -12,7 +12,7 @@ color_dict = {'grey': (240, 240, 240),
 
 class SudokuGUI:
     def __init__(self, board, width=756, height=756, font="Times New Roman", loading_font="Georgia"):
-        # aggiungere check per il font se esiste
+        # TODO check il font se esiste
         self.width = width
         self.height = height
         self.grid = []

@@ -1,5 +1,6 @@
 import random
 import sudoku_class
+# TODO add comments
 
 
 def randomize_position():
