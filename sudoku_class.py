@@ -9,7 +9,7 @@ class SudokuSolver:
         return self.board[item]
 
     def solve(self):
-        # solve the board
+        """solve the board with backtracking"""
         position = self.find_empty()
         if not position:
             return True
@@ -55,7 +55,7 @@ class SudokuSolver:
         return True
 
     def find_empty(self):
-        # find empty slot on the board and returns its position
+        """find empty slot on the board and returns its position"""
         for i in range(len(self.board[0])):
             for j in range(len(self.board[1])):
                 if self.get_value((i, j)) == 0:

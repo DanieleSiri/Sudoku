@@ -13,7 +13,6 @@ color_dict = {'grey': (240, 240, 240),
 
 class SudokuGUI:
     def __init__(self, board, width=756, height=756, font="Times New Roman", loading_font="Georgia"):
-        # TODO check il font se esiste
         self.width = width
         self.height = height
         self.grid = []
@@ -31,6 +30,7 @@ class SudokuGUI:
         self.play_again_cell = pygame.Rect(0, self.height//3, (self.width//2) - 10, self.height//4)
 
     def initialize(self):
+        """initializes the grid"""
         self.solved_board.solve()
         self.screen.fill(color_dict['grey'])
         # initialize grid
